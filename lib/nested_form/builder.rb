@@ -16,12 +16,14 @@ module NestedForm
       @fields ||= {}
       @fields[association] = block
       @fields[:options] = args.last.is_a?(Hash) ? args.last : {}
+      @fields[:association_name] = association
       super
     end
 
     def fields_for_nested_model(name, association, options, block)
       wrapper = options[:wrapper_tag] || :div
-      @template.content_tag(wrapper, super, :class => 'fields')
+      child_index = options[:child_index] || @nested_child_index["#{object_name}[#{@fields[:association_name]}_attributes]"]
+      @template.content_tag(wrapper, super, :class => 'fields', 'data-row' => child_index)
     end
   end
 end
