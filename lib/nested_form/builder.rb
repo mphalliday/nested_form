@@ -4,7 +4,7 @@ module NestedForm
       @fields ||= {}
       model_object = object.class.reflect_on_association(association).klass.new
       options = @fields[:options].merge(:child_index => "new_#{association}")
-      data_template = CGI.escapeHTML(fields_for(association, model_object, options, &@fields[association]))
+      data_template = CGI.escapeHTML(fields_for(association, model_object, options, &@fields[association])).html_safe
       @template.link_to(name, "javascript:void(0)", :class => "add_nested_fields", "data-association" => association, "data-fields" => data_template)
     end
 
@@ -12,11 +12,11 @@ module NestedForm
       hidden_field(:_destroy) + @template.link_to(name, "javascript:void(0)", :class => "remove_nested_fields")
     end
 
-    def fields_for_with_nested_attributes(association, args, block)
+    def fields_for_with_nested_attributes(association_name, association, options, block)
       @fields ||= {}
-      @fields[association] = block
-      @fields[:options] = args.last.is_a?(Hash) ? args.last : {}
-      @fields[:association_name] = association
+      @fields[association_name] = block
+      @fields[:options] = options.is_a?(Hash) ? options : {}
+      @fields[:association_name] = association_name
       super
     end
 
