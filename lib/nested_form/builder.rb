@@ -1,8 +1,8 @@
 module NestedForm
   class Builder < ::ActionView::Helpers::FormBuilder
-    def link_to_add(name, association)
+    def link_to_add(name, association, model_object = nil)
       @fields ||= {}
-      model_object = object.class.reflect_on_association(association).klass.new
+      model_object ||= object.class.reflect_on_association(association).klass.new
       options = @fields[:options].merge(:child_index => "new_#{association}")
       data_template = CGI.escapeHTML(fields_for(association, model_object, options, &@fields[association]))
       @template.link_to(name, "javascript:void(0)", :class => "add_nested_fields", "data-association" => association, "data-fields" => data_template)
